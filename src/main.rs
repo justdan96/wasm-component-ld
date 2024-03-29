@@ -52,7 +52,16 @@ struct WasmLdArgs {
     #[clap(short = 'm')]
     target_emulation: Option<String>,
     #[clap(long)]
+    shared: bool,
+    #[clap(long)]
     strip_all: bool,
+    #[clap(long)]
+    whole_archive_link: Vec<PathBuf>,
+    // these are options that should not expose to be set by the user
+    #[clap(long)]
+    whole_archive: Vec<PathBuf>,
+    #[clap(long)]
+    no_whole_archive: bool,
 
     objects: Vec<PathBuf>,
 }
@@ -65,6 +74,19 @@ fn main() -> Result<()> {
             args.remove(1);
         }
     }
+
+    let mut i = 1;
+    while i < args.len() {
+        // Check if the argument is "-shared"
+        if args[i] == "-shared" {
+            // change it to double hyphen
+            args[i] = "--shared".into();
+        } else {
+            // Move to the next argument
+            i += 1;
+        }
+    }
+
     App::parse_from(args).run()
 }
 
@@ -175,6 +197,14 @@ impl App {
         }
         if let Some(arg) = &self.lld.entry {
             lld.arg("--entry").arg(arg);
+        }
+        if self.lld.shared {
+            lld.arg("--shared");
+        }
+        for ar in self.lld.whole_archive_link.iter() {
+            // use unexposed parameters, so clap does not complain about not knowing what they are
+            lld.arg("--whole-archive").arg(ar);
+            lld.arg("--no-whole-archive");
         }
         lld
     }
