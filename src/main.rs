@@ -65,6 +65,19 @@ fn main() -> Result<()> {
             args.remove(1);
         }
     }
+
+    let mut i = 1;
+    while i < args.len() {
+        // Check if the argument is "-shared"
+        if args[i] == "-shared" {
+            // If found, remove it from the vector
+            args.remove(i);
+        } else {
+            // Move to the next argument
+            i += 1;
+        }
+    }
+
     App::parse_from(args).run()
 }
 
