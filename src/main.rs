@@ -55,6 +55,8 @@ struct WasmLdArgs {
     shared: bool,
     #[clap(long)]
     strip_all: bool,
+    #[clap(long)]
+    whole_archive_link: Vec<PathBuf>,
 
     objects: Vec<PathBuf>,
 }
@@ -193,6 +195,9 @@ impl App {
         }
         if self.lld.shared {
             lld.arg("--shared");
+        }
+        for ar in self.lld.whole_archive_link.iter() {
+            lld.arg(&format!("--whole-archive {ar} --no-whole-archive"));
         }
         lld
     }
