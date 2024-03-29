@@ -75,7 +75,7 @@ fn main() -> Result<()> {
         // Check if the argument is "-shared"
         if args[i] == "-shared" {
             // change it to double hyphen
-            args[i] == "--shared";
+            args[i] = "--shared";
         } else {
             // Move to the next argument
             i += 1;
@@ -197,7 +197,10 @@ impl App {
             lld.arg("--shared");
         }
         for ar in self.lld.whole_archive_link.iter() {
-            lld.arg(&format!("--whole-archive {} --no-whole-archive", ar.display()));
+            lld.arg(&format!(
+                "--whole-archive {} --no-whole-archive",
+                ar.display()
+            ));
         }
         lld
     }
