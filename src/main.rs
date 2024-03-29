@@ -197,7 +197,7 @@ impl App {
             lld.arg("--shared");
         }
         for ar in self.lld.whole_archive_link.iter() {
-            lld.arg(&format!("--whole-archive {ar} --no-whole-archive"));
+            lld.arg(&format!("--whole-archive {} --no-whole-archive", ar.display()));
         }
         lld
     }
