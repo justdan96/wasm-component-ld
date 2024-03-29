@@ -52,6 +52,8 @@ struct WasmLdArgs {
     #[clap(short = 'm')]
     target_emulation: Option<String>,
     #[clap(long)]
+    shared: bool,
+    #[clap(long)]
     strip_all: bool,
 
     objects: Vec<PathBuf>,
@@ -70,8 +72,8 @@ fn main() -> Result<()> {
     while i < args.len() {
         // Check if the argument is "-shared"
         if args[i] == "-shared" {
-            // If found, remove it from the vector
-            args.remove(i);
+            // change it to double hyphen
+            args[i] == "--shared";
         } else {
             // Move to the next argument
             i += 1;
@@ -188,6 +190,9 @@ impl App {
         }
         if let Some(arg) = &self.lld.entry {
             lld.arg("--entry").arg(arg);
+        }
+        if self.lld.shared {
+            lld.arg("--shared");
         }
         lld
     }
