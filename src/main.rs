@@ -57,6 +57,11 @@ struct WasmLdArgs {
     strip_all: bool,
     #[clap(long)]
     whole_archive_link: Vec<PathBuf>,
+    // these are options that should not expose to be set by the user
+    #[clap(long)]
+    whole_archive: Vec<PathBuf>,
+    #[clap(long)]
+    no_whole_archive: bool,
 
     objects: Vec<PathBuf>,
 }
@@ -197,10 +202,9 @@ impl App {
             lld.arg("--shared");
         }
         for ar in self.lld.whole_archive_link.iter() {
-            lld.arg(&format!(
-                "--whole-archive {} --no-whole-archive",
-                ar.display()
-            ));
+            // use unexposed parameters, so clap does not complain about not knowing what they are
+            lld.arg("--whole-archive").arg(ar);
+            lld.arg("--no-whole-archive");
         }
         lld
     }
