@@ -173,7 +173,7 @@ impl App {
         if self.lld.strip_all {
             lld.arg("--strip-all");
         }
-        if let Some(arg) = self.lld.entry {
+        if let Some(arg) = &self.lld.entry {
             lld.arg("--entry").arg(arg);
         }
         lld
